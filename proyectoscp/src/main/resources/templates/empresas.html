@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Empresas</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+	integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="card">
+			<div class="card-header">
+				<h3 style="float: left;">Empresas</h3>
+				<button type="button" class="btn btn-primary" style="float: right;"
+					data-toggle="modal" data-target="#exampleModalScrollable">NUEVO</button>
+			</div>
+			<div class="card-body">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Nombre</th>
+							<th scope="col">Direccion</th>
+							<th scope="col">telefono</th>
+							<th scope="col">Contacto</th>
+							<th scope="col">Settings</th>
+							
+						</tr>
+					</thead>
+					<tbody id="nodoempresa">
+						<tr data-th-id="${empresa.id}" data-th-each="empresa : ${empresas}">
+							<th data-th-text="${empresa.id}"></th>
+							<td data-th-text="${empresa.nombre}"></td>
+							<td data-th-text="${empresa.direccion}"></td>
+							<td data-th-text="${empresa.telefono}"></td>
+							<td data-th-text="${empresa.contacto}"></td>
+							<td><span class="icono" th:onclick="'update(\''+ ${empresa.id} +'\');'" data-toggle="modal" data-target="#modArea"><img src="/templates/img/cog.png" style="width:22px;height:22px;"> </span><span class="icono" th:onclick="'eliminar(\''+ ${empresa.id} +'\');'" data-toggle="modal" data-target="#questionModal">DEL</span></td>
+							
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="exampleModalScrollable" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalScrollableTitle"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalScrollableTitle">NUEVA
+						EMPRESA</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="input1">Nombre</label> <input
+								type="email" class="form-control" id="nombre"
+								aria-describedby="emailHelp" placeholder="Escribe tu nombre">
+						</div>
+						<div class="form-group">
+							<label for="input2">Direccion</label> <input
+								type="text" class="form-control" id="direccion"
+								placeholder="Escribe tu direccion">
+						</div>
+						<div class="form-group">
+							<label for="input3">Telefono</label> <input
+								type="text" class="form-control" id="telefono"
+								placeholder="Escribe tu telefono">
+						</div>
+						<div class="form-group">
+							<label for="input4">Contacto</label> <input
+								type="text" class="form-control" id="contacto"
+								placeholder="Escribe tu contacto">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Salir</button>
+					<button type="button" class="btn btn-primary" onclick="save();">Guardar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+function save(){
+	
+	var nombre = document.getElementById("nombre").value;
+	var direccion = document.getElementById("direccion").value;
+	var telefono = document.getElementById("telefono").value;
+	var contacto = document.getElementById("contacto").value;
+	//console.log(nombre+direccion+telefono+contacto);
+	
+	
+	$.ajax({
+        type: "POST",
+        url: "/empresa/save",
+        data: 'nombre=' + nombre + "&direccion=" + direccion + "&telefono=" + telefono + "&contacto=" + contacto,
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+
+            console.log(data);
+            window.location = "/empresas";
+        }
+    });
+}
+function update(id){
+	console.log(id);
+}
+function eliminar(id){
+	console.log(id);
+	
+	$.ajax({
+        type: "POST",
+        url: "/empresa/delete",
+        data: 'id=' + id,
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+
+            console.log(data);
+            
+            $("#"+id).remove();
+
+        }
+    });
+}
+/*
+ * 
+ window.onload = load;
+ function load(){
+   selecta(1);
+ }
+ function open_modal(id){ 
+   $("#valorid").append(id);
+ }
+ function selecta(tipo){
+   var data = new FormData();
+   var url = "index.php?controller=Actividades&action=consultaall";
+   $.ajax({
+     url: url,
+     type: 'POST',
+     contentType: false,
+     data: "",
+     dataType: "json",
+     processData: false,
+     cache: false
+     }).done(function(data){
+       if(tipo==1){
+         var cad="<option value='0'>Seleccione...</option>";
+         for(var i = 0; i < data.allempresa.length; i++) {
+             cad = cad + "<option value='"+data.allempresa[i].id+"'>"+data.allempresa[i].nombre+"</option>";
+         }
+         $('#idempresa').append(cad);
+       }else if(tipo==2){
+         var cad="";
+         for(var i = 0; i < data.allempresa.length; i++) {
+             cad = cad + "<option value='"+data.allempresa[i].id+"'>"+data.allempresa[i].nombre+"</option>";
+         }
+         $('#idempresab').append(cad);
+       }
+     });
+ }
+ function modificar(id){console.log(id);
+
+   var data = new FormData();
+   data.append('id', id);
+   var url = "index.php?controller=Area&action=consultadata";
+   $.ajax({
+     url: url,
+     type: 'POST',
+     contentType: false,
+     data: data,
+     dataType: "json",
+     processData: false,
+     cache: false
+     }).done(function(data){
+       if(data.success==true){
+         $("#spacex").append(id);
+         document.form.nombre.value = data.nombre;
+         document.form.encargado.value = data.encargado;
+         $("#idempresab").val(data.idEmpresa);
+       }
+     });
+ }
+ function eliminar(){
+   var id = document.getElementById("valorid").innerHTML;
+   var vaciar = document.getElementById("valorid").innerHTML="";
+   var data = new FormData();
+   data.append('id', id);
+   var url = "index.php?controller=Area&action=eliminar";
+   $.ajax({
+     url: url,
+     type: 'POST',
+     contentType: false,
+     data: data,
+     dataType: "json",
+     processData: false,
+     cache: false
+     }).done(function(data){
+       if(data.success==true){
+         $("#rem"+id).remove();
+         $("#questionModal").click();
+         notification("success","Eliminado Correctamente");
+       }
+     });
+ }
+ function close_modal(){
+   document.getElementById("valorid").innerHTML="";
+   document.getElementById("idempresa").innerHTML="";
+ }
+ 
+ acutalizar nodo
+ var texto="<tr id=rem"+data.id+"><td width='5%'>"+data.id+"</td><td width='20%'>"+data.nombre+"</td><td width='45%'>"+data.direccion+"</td><td width='10%'>"+data.telefono+"</td><td width='10%'>"+data.email+"</td><td width='10%'><span class='icono' onclick='modificar("+data.id+");' data-toggle='modal' data-target='#modEmpresa'><img src='asset/cog.png' style='width:22px;height:22px;margin-left: 10px;'></span><span class='icono' onclick='open_modal("+data.id+");' data-toggle='modal' data-target='#questionModal'><img src='asset/cancel-circle.png' style='width:22px;height:22px;margin-left: 10px;'></span></td></tr>";
+	$('#nodo').before(texto);
+	
+	
+ */
+</script>
